@@ -1,0 +1,95 @@
+[
+    {
+        "name": "PabaConfigurator",
+        "schema": [
+            {
+                "name": "configFile",
+                "type": "string"
+            },
+            {
+                "name": "outputFile",
+                "type": "string"
+            },
+            {
+                "name": "scenarios",
+                "type": "array",
+                "singular": "scenario",
+                "collectionItem": "PabaScenario"
+            }
+        ]
+    },
+    {
+        "name": "PabaScenario",
+        "schema": [
+            {
+                "name": "name",
+                "type": "string"
+            },
+            {
+                "name": "url",
+                "type": "string"
+            },
+            {
+                "name": "host",
+                "type": "string"
+            },
+            {
+                "name": "headers",
+                "type": "array",
+                "singular": "header",
+                "default": []
+            },
+            {
+                "name": "comment",
+                "type": "string"
+            },
+            {
+                "name": "run",
+                "type": "int",
+                "default": 1
+            },
+            {
+                "name": "concurrency",
+                "type": "int",
+                "default": 1
+            },
+            {
+                "name": "step",
+                "type": "int",
+                "default": 0
+            },
+            {
+                "name": "repeat",
+                "type": "int",
+                "default": 0
+            },
+            {
+                "name": "timeout",
+                "type": "int",
+                "default": 120
+            },
+            {
+                "name": "sleep",
+                "type": "int",
+                "default": 0
+            }
+        ]
+    },
+    {
+        "name": "PabaItem",
+        "schema": [
+            {
+                "name": "title",
+                "type": "string"
+            },
+            {
+                "name": "value",
+                "type": "string"
+            },
+            {
+                "name": "unit",
+                "type": "string"
+            }
+        ]
+    }
+]

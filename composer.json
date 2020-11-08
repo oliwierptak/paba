@@ -1,0 +1,30 @@
+{
+    "name": "oliwierptak/paba",
+    "description": "PABA - PHP Apache Benchmark Analyser: analyses output of ab (Apache Benchmark) and generates CSV file",
+    "type": "library",
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "require": {
+        "symfony/console": "^5.1"
+    },
+    "require-dev": {
+        "php": "^7.4",
+        "phpunit/phpunit": "^9.4",
+        "popo/generator": "^3",
+        "symfony/var-dumper": "^5.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Paba\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PabaTests\\Suit\\": "tests/suit/"
+        }
+    },
+    "scripts": {
+        "tests": "vendor/bin/phpunit --testdox --no-coverage",
+        "popo": "vendor/bin/popo generate"
+    }
+}

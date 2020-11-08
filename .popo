@@ -1,0 +1,10 @@
+[paba]
+schema = popo/
+template = vendor/popo/generator/templates/
+output = src/Configurator/
+namespace = Paba\Configurator
+extension = .php
+abstract = 
+extends = 
+withInterface = 0
+withPopo = 1

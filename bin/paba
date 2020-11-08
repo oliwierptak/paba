@@ -1,0 +1,11 @@
+#!/usr/bin/env php
+<?php
+
+require_once getcwd() . '/vendor/autoload.php';
+
+use Symfony\Component\Console\Application;
+
+$console = new Application('paba', \Paba\PabaFacadeInterface::VERSION);
+$console->add(new \Paba\Command\GenerateCommand());
+
+$console->run();
