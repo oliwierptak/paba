@@ -80,13 +80,15 @@ class PabaModel
             }
 
             if ($scenario->hasSleep()) {
-                $progressIndicator->message('%scenario_sleep:-8s%');
+                $progressIndicator->message(
+                    "%scenario_step:3s%/%scenario_repeat:-3s% %scenario_sleep:50s%"
+                );
                 sleep($scenario->getSleep());
             }
         }
 
         $progressIndicator->stop(
-            "<fg=green>✔</> All done in %elapsed%\n"
+            "All done in %elapsed% <fg=green>✔</>\n"
         );
     }
 

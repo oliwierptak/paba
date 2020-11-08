@@ -45,9 +45,10 @@ class AbModel
                 escapeshellarg($scenario->getHost() . $scenario->getUrl())
             );
 
-            $output = shell_exec($ab);
-
             $progressIndicator->advance($scenario, $a + 1);
+            $progressIndicator->display();
+
+            $output = shell_exec($ab);
 
             if ($output === null) {
                 throw new Exception('Error while executing ab: ' . $ab);

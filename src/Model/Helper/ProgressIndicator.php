@@ -63,6 +63,12 @@ class ProgressIndicator
             }
         );
         ProgressBar::setPlaceholderFormatterDefinition(
+            'scenario_comment',
+            function (ProgressBar $progressBar, OutputInterface $output) use ($scenario) {
+                return trim($scenario->getComment()) === '' ? '' : ' - ' . $scenario->getComment();
+            }
+        );
+        ProgressBar::setPlaceholderFormatterDefinition(
             'scenario_sleep',
             function (ProgressBar $progressBar, OutputInterface $output) use ($scenario) {
                 return sprintf('Sleeping after scenario: <fg=yellow>%s</> for <fg=yellow>%ds</>',
@@ -86,7 +92,7 @@ class ProgressIndicator
         );
 
         $this->progressBar->setFormat(
-            "%current:3s%/%max:-3s% %bar% %percent:3s%% (%remaining%)\n%scenario_step:3s%/%scenario_repeat:-3s% <fg=cyan>%scenario_name:-45s%</>"
+            "%current:3s%/%max:-3s% %bar% %percent:3s%% (%remaining%)\n%scenario_step:3s%/%scenario_repeat:-3s% <fg=cyan>%scenario_name%</>%scenario_comment%"
         );
 
         $this->progressBar->advance();
@@ -109,6 +115,15 @@ class ProgressIndicator
         }
 
         $this->progressBar->setFormat($message);
+        $this->progressBar->display();
+    }
+
+    public function display(): void
+    {
+        if (!$this->showProgressBar()) {
+            return;
+        }
+
         $this->progressBar->display();
     }
 }

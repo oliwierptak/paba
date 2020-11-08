@@ -1,5 +1,5 @@
 {
-    "name": "oliwierptak/paba",
+    "name": "paba/generator",
     "description": "PABA - PHP Apache Benchmark Analyser: analyses output of ab (Apache Benchmark) and generates CSV file",
     "type": "library",
     "license": "MIT",
