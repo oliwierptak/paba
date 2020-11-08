@@ -1,4 +1,6 @@
-# paba
+# PABA
+
+PABA - PHP Apache Benchmark Analyser: analyses output of ab (Apache Benchmark) and generates CSV file
 
 
 ## Installation
