@@ -2,6 +2,7 @@
 
 namespace Paba\Command;
 
+use InvalidArgumentException;
 use Paba\Configurator\PabaConfigurator;
 use Paba\Configurator\ScenarioContainer;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,9 +22,9 @@ class GenerateCommand extends AbstractCommand
         $this
             ->setName(static::COMMAND_NAME)
             ->setDescription(static::COMMAND_DESCRIPTION)
-            ->addArgument(static::ARGUMENT_CONFIG_SECTION_NAME, InputOption::VALUE_OPTIONAL, 'Config section name')
             ->addOption(static::OPTION_CONFIG_FILENAME, 'c', InputOption::VALUE_REQUIRED, 'Config filename')
-            ->addOption(static::OPTION_OUTPUT_FILENAME, 'o', InputOption::VALUE_REQUIRED, 'Output filename');
+            ->addOption(static::OPTION_OUTPUT_FILENAME, 'o', InputOption::VALUE_REQUIRED, 'Output filename')
+            ->addArgument(static::ARGUMENT_CONFIG_SECTION_NAME, InputOption::VALUE_OPTIONAL, 'Config section name');
     }
 
     protected function executeCommand(InputInterface $input, OutputInterface $output): int
@@ -41,6 +42,16 @@ class GenerateCommand extends AbstractCommand
         OutputInterface $output
     ): PabaConfigurator
     {
+        $value = trim((string) $input->getOption(static::OPTION_CONFIG_FILENAME));
+        if ($value === '') {
+            throw new InvalidArgumentException('Required value missing for: ' . static::OPTION_CONFIG_FILENAME);
+        }
+
+        $value = trim((string) $input->getOption(static::OPTION_OUTPUT_FILENAME));
+        if ($value === '') {
+            throw new InvalidArgumentException('Required value missing for: ' . static::OPTION_OUTPUT_FILENAME);
+        }
+
         $configurator = (new PabaConfigurator())
             ->setConfigFile($input->getOption(static::OPTION_CONFIG_FILENAME))
             ->setOutputFile($input->getOption(static::OPTION_OUTPUT_FILENAME));
@@ -59,7 +70,7 @@ class GenerateCommand extends AbstractCommand
             static::OPTION_SLEEP => $input->getOption(static::OPTION_SLEEP),*/
         ];
 
-        $items = $scenarioContainer->getScenarios($input->getOption(static::OPTION_CONFIG_FILENAME));
+        $items = $scenarioContainer->getScenarios($configurator->getConfigFile());
         $configSections = $input->getArgument(static::ARGUMENT_CONFIG_SECTION_NAME);
 
         if (!empty($configSections)) {

@@ -7,6 +7,7 @@ namespace Paba;
 use Paba\Configurator\ScenarioContainer;
 use Paba\Model\AbModel;
 use Paba\Model\AnalyseModel;
+use Paba\Model\Helper\Reporter;
 use Paba\Model\PabaModel;
 use Paba\Model\WriterModel;
 use Paba\Plugin\CompleteRequestsPlugin;
@@ -48,14 +49,14 @@ class PabaFactory
             $this->createAnalyseModel(),
             $this->createWriterModel(),
             $this->createScenarioContainer(),
-            $this->getOutput()
+            $this->createReporter()
         );
     }
 
     protected function createAbModel(): AbModel
     {
         return new AbModel(
-            $this->getOutput()
+            $this->createReporter()
         );
     }
 
@@ -92,5 +93,12 @@ class PabaFactory
     protected function createScenarioContainer(): ScenarioContainer
     {
         return new ScenarioContainer();
+    }
+
+    private function createReporter(): Reporter
+    {
+        return new Reporter(
+            $this->getOutput()
+        );
     }
 }

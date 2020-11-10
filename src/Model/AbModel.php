@@ -7,28 +7,26 @@ namespace Paba\Model;
 use Exception;
 use Generator;
 use Paba\Configurator\PabaScenario;
-use Paba\Model\Helper\ProgressIndicator;
-use Symfony\Component\Console\Output\OutputInterface;
+use Paba\Model\Helper\Reporter;
 use function escapeshellarg;
 use function shell_exec;
 
 class AbModel
 {
-    protected OutputInterface $output;
+    protected Reporter $reporter;
 
-    public function __construct(OutputInterface $output)
+    public function __construct(Reporter $reporter)
     {
-        $this->output = $output;
+        $this->reporter = $reporter;
     }
 
     /**
      * @param \Paba\Configurator\PabaScenario $scenario
-     * @param \Paba\Model\Helper\ProgressIndicator $progressIndicator
      *
      * @return \Generator
      * @throws \Exception
      */
-    public function run(PabaScenario $scenario, ProgressIndicator $progressIndicator): Generator
+    public function run(PabaScenario $scenario): Generator
     {
         $concurrency = $scenario->getConcurrency();
         for ($a = 0; $a < $scenario->getRepeat(); $a++) {
@@ -37,7 +35,7 @@ class AbModel
                 $headerOption .= sprintf('-H "%s:%s" ', $name, $value);
             }
 
-            $ab = sprintf('ab %s -s %d -n %d -c %d %s',
+            $ab = sprintf('ab -d -q %s -s %d -n %d -c %d %s',
                 $headerOption,
                 $scenario->getTimeout(),
                 $scenario->getRun(),
@@ -45,8 +43,7 @@ class AbModel
                 escapeshellarg($scenario->getHost() . $scenario->getUrl())
             );
 
-            $progressIndicator->advance($scenario, $a + 1);
-            $progressIndicator->display();
+            $this->reporter->reportAb($scenario, $a + 1, $concurrency);
 
             $output = shell_exec($ab);
 

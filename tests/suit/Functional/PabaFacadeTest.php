@@ -11,13 +11,28 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class PabaFacadeTest extends TestCase
 {
-    protected string $configFile = \PABA_TESTS_FIXTURE_DIR . 'scenario.ini';
+    protected string $configFile = \PABA_TESTS_FIXTURE_DIR . 'example.ini';
 
     protected string $outputCsv = '/tmp/paba_output.csv';
 
+    /**
+     * @var false|resource
+     */
+    protected $localWebServer;
+
+    protected array $pipes = [];
+
     protected function setUp(): void
     {
+        $this->localWebServer = proc_open("php -S localhost:8484 -t ./tests/fixtures/www/ > /dev/null 2>&1 &", [], $this->pipes);
+        sleep(1);
+
         @unlink($this->outputCsv);
+    }
+
+    protected function tearDown(): void
+    {
+        proc_close($this->localWebServer);
     }
 
     public function testAnalyse()

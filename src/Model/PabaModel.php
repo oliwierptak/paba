@@ -9,8 +9,7 @@ use Paba\Configurator\PabaConfigurator;
 use Paba\Configurator\PabaItem;
 use Paba\Configurator\PabaScenario;
 use Paba\Configurator\ScenarioContainer;
-use Paba\Model\Helper\ProgressIndicator;
-use Symfony\Component\Console\Output\OutputInterface;
+use Paba\Model\Helper\Reporter;
 
 class PabaModel
 {
@@ -20,33 +19,28 @@ class PabaModel
 
     protected WriterModel $writer;
 
-    protected OutputInterface $output;
-
     protected ScenarioContainer $scenarioContainer;
+
+    protected Reporter $reporter;
 
     public function __construct(
         AbModel $ab,
         AnalyseModel $analyser,
         WriterModel $writer,
         ScenarioContainer $scenarioContainer,
-        OutputInterface $output
+        Reporter $reporter
     )
     {
         $this->ab = $ab;
         $this->analyser = $analyser;
         $this->writer = $writer;
         $this->scenarioContainer = $scenarioContainer;
-        $this->output = $output;
+        $this->reporter = $reporter;
     }
 
     public function generate(PabaConfigurator $configurator): void
     {
-        $this->output->writeln(sprintf(
-            'Generating output under: <fg=yellow>%s</>',
-            $configurator->getOutputFile()
-        ));
-
-        $this->output->writeln('');
+        $this->reporter->announce($configurator);
 
         $this->validate($configurator);
 
@@ -61,10 +55,8 @@ class PabaModel
             $max += $scenario->getRepeat();
         }
 
-        $progressIndicator = new ProgressIndicator($this->output, $configurator);
-        $progressIndicator->start($max);
-
         foreach ($configurator->getScenarios() as $scenario) {
+            $this->reporter->reportScenario($scenario);
             $this->validateScenario($scenario);
 
             if ($scenario->getRepeat() < 1) {
@@ -72,7 +64,7 @@ class PabaModel
             }
 
             $data = $this->generateScenarioStats($scenario);
-            foreach ($this->ab->run($scenario, $progressIndicator) as $abResult) {
+            foreach ($this->ab->run($scenario) as $abResult) {
                 $data = array_merge($data, $this->analyser->analyse($abResult));
 
                 $this->writer->writeHeader($configurator->getOutputFile(), $data);
@@ -80,16 +72,12 @@ class PabaModel
             }
 
             if ($scenario->hasSleep()) {
-                $progressIndicator->message(
-                    "%scenario_step:3s%/%scenario_repeat:-3s% %scenario_sleep:50s%"
-                );
+                $this->reporter->sleep($scenario);
                 sleep($scenario->getSleep());
             }
         }
 
-        $progressIndicator->stop(
-            "All done in %elapsed% <fg=green>✔</>\n"
-        );
+        $this->reporter->done();
     }
 
     protected function validate(PabaConfigurator $configurator)
