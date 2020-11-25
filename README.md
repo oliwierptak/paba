@@ -14,7 +14,7 @@ composer require paba/paba
 Define a config file, and output csv path, for example:
 
 ```sh
-bin/paba generate -c tests/fixtures/example.ini -o /tmp/example.csv
+vendor/bin/paba generate -c tests/fixtures/example.ini -o /tmp/example.csv -v
 ```
 
 ### Ini example
