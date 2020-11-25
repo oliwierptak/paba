@@ -35,6 +35,10 @@ class AbModel
                 $headerOption .= sprintf('-H "%s:%s" ', $name, $value);
             }
 
+            if ($concurrency > $scenario->getRun()) {
+                $concurrency = $scenario->getRun();
+            }
+
             $ab = sprintf('ab -d -q %s -s %d -n %d -c %d %s',
                 $headerOption,
                 $scenario->getTimeout(),
@@ -48,7 +52,7 @@ class AbModel
             $output = shell_exec($ab);
 
             if ($output === null) {
-                throw new Exception('Error while executing ab: ' . $ab);
+                throw new Exception(sprintf('Error while executing ab: "%s"', $ab));
             }
 
             $concurrency += $scenario->getStep();
